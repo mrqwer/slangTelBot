@@ -3,3 +3,4 @@ draft.txt
 *.txt
 *.mongodb
 devprivate
+.idea
