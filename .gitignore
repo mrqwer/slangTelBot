@@ -1,0 +1,5 @@
+.env
+draft.txt
+*.txt
+*.mongodb
+devprivate
