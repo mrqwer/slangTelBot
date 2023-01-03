@@ -1,5 +1,9 @@
 package checker
 
+import (
+	"strings"
+)
+
 //var (
 //	c1 = database.Collection{"windows", []string{"винда", "виндовс", "win", "вин", "шиндовс", "венда",
 //		"шиндоуз"}}
@@ -10,15 +14,15 @@ package checker
 //	//data := bson.M
 //)
 
-func isValidWord(v interface{}) (bool, error) {
+func ValidWord(v interface{}) bool {
 	switch v.(type) {
 	case string:
-		return true, nil
+		return true
 	default:
-		return false, nil
+		return false
 	}
 }
 
-func createData() {
-
+func Lower(s string) string {
+	return strings.ToLower(s)
 }

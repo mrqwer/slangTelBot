@@ -60,16 +60,19 @@ func Bot() {
 				} else if flag == 1 {
 					flag = 0
 				} else if flag == 2 {
-					filterDoc := bson.M{"$text": bson.M{"$search": "комп"}}
-					temp, err := database.GetMongoDoc(database.Dictionary, filterDoc)
+					//filterDoc := bson.M{"$text": bson.M{"$search": "комп"}}
+					//temp, err := database.GetMongoDoc(database.Dictionary, filterDoc)
+					//if err != nil {
+					//	log.Fatal(err)
+					//}
+					//msg := tgbotapi.NewMessage(update.Message.Chat.ID, temp.Standard+": "+formatPrint(temp.Slang)+"\nЕсли хотите остановить, то введите команду /stop")
+
+					s, err := findStandard(update.Message.Text)
 					if err != nil {
-						log.Fatal(err)
+						log.Printf("Cannot run find algorithm\n%v", err)
 					}
-					msg := tgbotapi.NewMessage(update.Message.Chat.ID, temp.Standard+": "+formatPrint(temp.Slang)+"\nЕсли хотите остановить, то введите команду /stop")
 
-					// logic is here
-					// if /stop then flag = 0
-
+					msg := tgbotapi.NewMessage(update.Message.Chat.ID, s)
 					if _, err := bot.Send(msg); err != nil {
 						log.Fatal(err)
 					}
