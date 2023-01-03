@@ -17,7 +17,7 @@ var (
 )
 
 type Collection struct {
-	Standard string   `bson:"name"`
+	Standard string   `bson:"standard"`
 	Slang    []string `bson:"slangs"`
 }
 

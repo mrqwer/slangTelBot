@@ -4,3 +4,5 @@ draft.txt
 *.mongodb
 devprivate
 .idea
+articles
+draft.go
