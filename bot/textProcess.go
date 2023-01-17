@@ -2,11 +2,12 @@ package bot
 
 import (
 	"errors"
+	"fmt"
 	"github/mrqwer/slangTelBot/checker"
 	"github/mrqwer/slangTelBot/database"
 	"log"
 
-	edlib "github.com/hbollon/go-edlib"
+	"github.com/hbollon/go-edlib"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -83,10 +84,24 @@ func findStandard(s interface{}) (string, error) {
 			break
 		}
 	}
-	if m >= 9.5 {
-		return Result(data, index)
+	fmt.Print(m, index)
+	if t, err := searchByMongo(newS); err == nil {
+		return t, nil
 	} else {
 		_, j := Max(listOfSums)
 		return Result(data, j)
 	}
+}
+
+//func compareStrings(s1, s2 string) bool {
+//	return s1 == s2
+//}
+
+func searchByMongo(s string) (string, error) {
+	filterDoc := bson.M{"$text": bson.M{"$search": s}}
+	data, err := database.GetMongoDoc(database.Dictionary, filterDoc)
+	if err != nil {
+		return "", err
+	}
+	return data.Standard, nil
 }
