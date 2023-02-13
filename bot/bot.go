@@ -1,10 +1,11 @@
 package bot
 
 import (
+	"fmt"
 	"github/mrqwer/slangTelBot/database"
 	"log"
 	"os"
-	"strconv"
+	"strings"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	"go.mongodb.org/mongo-driver/bson"
@@ -67,13 +68,39 @@ func Bot() {
 					//}
 					//msg := tgbotapi.NewMessage(update.Message.Chat.ID, temp.Standard+": "+formatPrint(temp.Slang)+"\nЕсли хотите остановить, то введите команду /stop")
 
-					s, err := findStandard(update.Message.Text)
-					if err != nil {
-						log.Printf("Cannot run find algorithm\n%v", err)
+					s, _ := findStandard(update.Message.Text)
+					if s == "" {
+						s = "Извините! По вашему запросу я не смог ничего найти.\n" +
+							"Попробуйте изменить слова или убрать лишние символы. Поиск будет успешным, если вы выберите похожие слова."
+					} else {
+						s = strings.TrimSpace(s)
+						lst := strings.Split(s, " ")
+
+						s = ""
+						for i := range lst {
+							fmt.Println(lst[i])
+							fmt.Println("I am here")
+							filt := bson.M{"standard": lst[i]}
+							d, err := database.GetMongoDoc(database.Dictionary, filt)
+							if err != nil {
+								log.Printf("This is an error, \n%v", err)
+								return
+							}
+							s += "*Формально:* " + d.Formal + "\n" + "*Международный стандарт:* " + strings.Title(d.Standard)
+							s += "\n" + "*Определение:* " + d.Definition + "\n\n"
+						}
 					}
 
 					msg := tgbotapi.NewMessage(update.Message.Chat.ID, s)
+					msg.ParseMode = "Markdown"
 					if _, err := bot.Send(msg); err != nil {
+						log.Fatal(err)
+					}
+
+					stopMsg := "Если хотите остановить поиск, введите команду /stop."
+					msg2 := tgbotapi.NewMessage(update.Message.Chat.ID, stopMsg)
+
+					if _, err := bot.Send(msg2); err != nil {
 						log.Fatal(err)
 					}
 				}
@@ -86,21 +113,21 @@ func Bot() {
 			}
 
 			msg := tgbotapi.NewMessage(update.CallbackQuery.Message.Chat.ID, "")
+			msg.ParseMode = "Markdown"
 			switch update.CallbackQuery.Data {
 			case "dict":
-				msg.Text = d
+				msg.Text = topSlangs()
 				flag = 1
 			case "slang":
 				msg.Text = "Пожалуйста, напишите сленг\n" +
 					"Я попробую найти"
 				flag = 2
 			case "data":
-				msg.Text = "Краткая академическая информация про it сленги...\nСписок статей для детального ознакомления"
+				msg.Text = "Aкадемическая информация про it сленги...\nСписок статей для детального ознакомления"
 				msg.ReplyMarkup = optionKeyboard1
+				//sendDocs(&update, bot)
 			case "count":
-				countFilter := bson.M{}
-				countFilterData := database.CountCollection(database.Dictionary, countFilter)
-				msg.Text = "На данный момент у нас " + strconv.Itoa(countFilterData) + " записей"
+				countMessage(&msg)
 				flag = 0
 			}
 			if _, err := bot.Send(msg); err != nil {
@@ -109,3 +136,14 @@ func Bot() {
 		}
 	}
 }
+
+//photoBytes, err := ioutil.ReadFile("/your/local/path/to/picture.png")
+//if err != nil {
+//    panic(err)
+//}
+//photoFileBytes := tgbotapi.FileBytes{
+//    Name:  "picture",
+//    Bytes: photoBytes,
+//}
+//chatID := 12345678
+//message, err := bot.Send(tgbotapi.NewPhotoUpload(int64(chatID), photoFileBytes))

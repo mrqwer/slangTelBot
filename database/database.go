@@ -13,12 +13,14 @@ import (
 )
 
 var (
-	Dictionary *mongo.Collection = OpenCollection(Client, "dictionary")
+	Dictionary *mongo.Collection = OpenCollection(Client, "test")
 )
 
 type Collection struct {
-	Standard string   `bson:"standard"`
-	Slang    []string `bson:"slangs"`
+	Standard   string   `bson:"standard"`
+	Slang      []string `bson:"slangs"`
+	Formal     string   `bson:"formal"`
+	Definition string   `bson:"description"`
 }
 
 //type Slang struct {}

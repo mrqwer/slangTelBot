@@ -5,27 +5,40 @@ import (
 )
 
 var (
-	dictionary = map[string][]string{
-		"компьютер": []string{"компухтер", "комп", "копи", "железо", "машина"},
-		"линукс":    []string{"лин", "пингвин", "гнулинукс"},
+	dictionary = []string{
+		"spam",
+		"api",
+		"hacker",
+		"computer-networks",
+		"software-engineering",
+		"software",
+		"programming",
+		"internet",
+		"computer",
+		"database",
 	}
-
-	d = func(map[string][]string) string {
-		s := ""
-		for k, v := range dictionary {
-			s += string(k) + ": "
-			for i := range v {
-				if i == len(v)-1 {
-					s += v[i]
-				} else {
-					s += v[i] + ","
-				}
-			}
-			s += "\n"
-		}
-		return s
-	}(dictionary)
 )
+
+//	dictionary = map[string][]string{
+//		"компьютер": []string{"компухтер", "комп", "копи", "железо", "машина"},
+//		"линукс":    []string{"лин", "пингвин", "гнулинукс"},
+//	}
+//
+//	d = func(map[string][]string) string {
+//		s := ""
+//		for k, v := range dictionary {
+//			s += string(k) + ": "
+//			for i := range v {
+//				if i == len(v)-1 {
+//					s += v[i]
+//				} else {
+//					s += v[i] + ","
+//				}
+//			}
+//			s += "\n"
+//		}
+//		return s
+//	}(dictionary)
 
 //var numericKeyboard = tgbotapi.NewReplyKeyboard(
 //	tgbotapi.NewKeyboardButtonRow(
